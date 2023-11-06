@@ -4,7 +4,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 import uvicorn
 
-df = pd.read_csv('메뉴링크포함.csv')
+df = pd.read_csv('Menu_List.csv')
 app = FastAPI()
     
 @app.get('/')
