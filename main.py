@@ -4,7 +4,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 import uvicorn
 
-df = pd.read_csv('메뉴리스트.csv', encoding='korean')
+df = pd.read_csv('메뉴링크포함.csv')
 app = FastAPI()
     
 @app.get('/')
@@ -16,7 +16,6 @@ async def hello_world():
 @app.get('/recipe/material')
 async def food_material(material: str):
     food_list = df[df.eq(material).any(axis=1)]
-    food_list = food_list.drop(labels='description', axis=1)
     
     if not food_list.empty:
         return food_list
@@ -28,7 +27,6 @@ async def food_material(material: str):
 @app.get('/recipe/category')
 async def food_category(category: str):
     food_list = df[df.eq(category).any(axis=1)]
-    food_list = food_list.drop(labels='description', axis=1)
     
     if not food_list.empty:
         return food_list
@@ -39,9 +37,9 @@ async def food_category(category: str):
 # 오늘의 추천 레시피
 @app.get('/recipe/today')
 async def today_recipe():
-    '''
-    '''
-    return
+    a = random.randint(0, 281)
+    food_list = df.iloc[a]
+    return food_list
 
 
 # 음식 아이디를 받으면 대표 이미지 리턴
