@@ -5,6 +5,7 @@ from fastapi.responses import FileResponse
 import uvicorn
 
 df = pd.read_csv('Menu_List.csv')
+df = df.fillna('')
 app = FastAPI()
     
 @app.get('/')
