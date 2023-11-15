@@ -42,7 +42,7 @@ async def food_category(category: str):
 # 오늘의 추천 레시피
 @app.get('/recipe/today')
 async def today_recipe():
-    a = random.sample(range(282), 12)
+    a = random.sample(range(0, 281), 12)
 
     food_list = [df.iloc[i].to_dict() for i in a]
         
