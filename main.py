@@ -3,6 +3,7 @@ import random
 import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
+import json
 
 df = pd.read_csv('Menu_List.csv')
 df = df.fillna('')
@@ -18,32 +19,39 @@ async def hello_world():
 @app.get('/recipe/material')
 async def food_material(material: str):
     food_list = df[df.eq(material).any(axis=1)]
-
-    if not food_list.empty:
-        return food_list
+    food_list = food_list.to_json(orient='records', force_ascii=False).replace("\\/", "/")
+    
+    if food_list:
+        return json.loads(food_list)
     else:
-        raise HTTPException(status_code=404, detail="입력한 재료가 들어간 음식 레시피가 없습니다")
+        return {"status": 400}
 
 
 # 카테고리를 기반으로 레시피들을 조회
 @app.get('/recipe/category')
 async def food_category(category: str):
     food_list = df[df.eq(category).any(axis=1)]
-
-    if not food_list.empty:
-        return food_list
+    food_list = food_list.to_json(orient='records', force_ascii=False).replace("\\/", "/")
+    
+    if food_list:
+        return json.loads(food_list)
     else:
-        raise HTTPException(status_code=404, detail="잘못된 카테고리입니다.")
+        return {"status": 400}
 
 
 # 오늘의 추천 레시피
 @app.get('/recipe/today')
 async def today_recipe():
     a = random.sample(range(282), 12)
-    food_list = []
-    for i in a:
-        food_list.append(df.iloc[a])
-    return food_list
+
+    food_list = [df.iloc[i].to_dict() for i in a]
+        
+    food_list = pd.Series(food_list).to_json(orient='records', force_ascii=False).replace("\\/", "/")
+    
+    if food_list:
+        return json.loads(food_list)
+    else:
+        return {"status": 400}
 
 
 # 음식 아이디를 받으면 대표 이미지 리턴
